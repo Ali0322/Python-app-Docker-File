@@ -1,0 +1,22 @@
+import os
+from flask import Flask
+import mysql.connector
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    db = mysql.connector.connect(
+        host=os.getenv('MYSQL_HOST', 'mysql'),
+        user=os.getenv('MYSQL_USER', 'admin'),
+        password=os.getenv('MYSQL_PASSWORD', 'admin'),
+        database=os.getenv('MYSQL_DB', 'mydb')
+    )
+    cursor = db.cursor()
+    cursor.execute("SELECT 'Hello, World!'")
+    result = cursor.fetchone()
+    db.close()
+    return result[0]
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
